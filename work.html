@@ -8,7 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎥</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
     /* Specific styles for Dedicated Works & Folder Explorer Page */
@@ -563,6 +563,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Theme Toggle Logic
       const themeToggle = document.getElementById('themeToggle');
+      const navbar = document.getElementById('navbar');
       const body = document.body;
       function applyTheme(theme) {
         body.classList.remove('theme-dark', 'theme-light');
@@ -570,18 +571,50 @@
         localStorage.setItem('portfolio-theme', theme);
       }
       const savedTheme = localStorage.getItem('portfolio-theme');
-      if (savedTheme) applyTheme(savedTheme);
+      if (savedTheme) {
+        applyTheme(savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        applyTheme('light');
+      }
       themeToggle.addEventListener('click', () => {
         const isLight = body.classList.contains('theme-light');
         applyTheme(isLight ? 'dark' : 'light');
+        if (window.anime) {
+          anime({ targets: themeToggle, scale: [1, 1.22, 1], duration: 400, easing: 'easeOutBack' });
+        }
       });
+
+      // Navbar scroll glass effect
+      function handleNavbarScroll() {
+        if (window.scrollY > 40) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      }
+      window.addEventListener('scroll', handleNavbarScroll, { passive: true });
+      handleNavbarScroll();
 
       // Hamburger mobile menu
       const navHamburger = document.getElementById('navHamburger');
       const navLinks = document.getElementById('navLinks');
       navHamburger.addEventListener('click', () => {
-        const isOpen = navLinks.classList.toggle('open');
+        const isOpen = navbar.classList.toggle('menu-open');
+        navLinks.classList.toggle('open', isOpen);
         navHamburger.classList.toggle('open', isOpen);
+        navHamburger.setAttribute('aria-expanded', String(isOpen));
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+
+      const allNavLinks = navLinks.querySelectorAll('a');
+      allNavLinks.forEach(a => {
+        a.addEventListener('click', () => {
+          navbar.classList.remove('menu-open');
+          navLinks.classList.remove('open');
+          navHamburger.classList.remove('open');
+          navHamburger.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        });
       });
 
       // Back to top floating button
@@ -706,11 +739,23 @@
         const pathLabel = document.getElementById('explorerPathLabel');
         const subDef = folderDef.subfolders.find(s => s.id === activeSubId);
         if (pathLabel) {
-          pathLabel.textContent = `${folderDef.title} / ${subDef ? subDef.title : 'All'}`;
+          if (searchFilter) {
+            pathLabel.textContent = `Search / "${searchFilter}"`;
+          } else {
+            pathLabel.textContent = `${folderDef.title} / ${subDef ? subDef.title : 'All'}`;
+          }
         }
       }
 
       let currentDisplayedItems = [];
+
+      function getThumbnailSrc(item) {
+        if (!item.src) return '';
+        if (item.type === 'video') {
+          return item.src.replace('/video/upload/', '/video/upload/f_auto,q_auto,w_600,so_0/').replace(/\.mp4$/i, '.jpg');
+        }
+        return item.src.replace('/image/upload/', '/image/upload/f_auto,q_auto,w_600/');
+      }
 
       // Create item element without any download capability
       function createExplorerItem(item, list) {
@@ -725,33 +770,25 @@
         tag.textContent = (item.subcategory || item.category).toUpperCase();
         div.appendChild(tag);
 
-        if (item.type === 'video') {
-          const wrap = document.createElement('div');
-          wrap.className = 'media-wrap video-wrap';
-          const vid = document.createElement('video');
-          vid.src = item.src;
-          vid.muted = true;
-          vid.preload = 'metadata';
-          vid.setAttribute('controlsList', 'nodownload noplaybackrate');
-          vid.setAttribute('disablePictureInPicture', 'true');
-          wrap.appendChild(vid);
+        const wrap = document.createElement('div');
+        wrap.className = item.type === 'video' ? 'media-wrap video-wrap' : 'media-wrap img-wrap';
 
+        const img = document.createElement('img');
+        img.src = getThumbnailSrc(item);
+        img.alt = item.title;
+        img.loading = 'lazy';
+        img.setAttribute('decoding', 'async');
+        img.setAttribute('draggable', 'false');
+        wrap.appendChild(img);
+
+        if (item.type === 'video') {
           const badge = document.createElement('div');
           badge.className = 'play-badge';
           badge.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
           wrap.appendChild(badge);
-          div.appendChild(wrap);
-        } else {
-          const wrap = document.createElement('div');
-          wrap.className = 'media-wrap img-wrap';
-          const img = document.createElement('img');
-          img.src = item.src;
-          img.alt = item.title;
-          img.loading = 'lazy';
-          img.setAttribute('draggable', 'false');
-          wrap.appendChild(img);
-          div.appendChild(wrap);
         }
+
+        div.appendChild(wrap);
 
         const overlay = document.createElement('div');
         overlay.className = 'item-overlay';
@@ -795,6 +832,17 @@
         const countBadge = document.getElementById('explorerCountBadge');
         if (countBadge) countBadge.textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}`;
 
+        const pathLabel = document.getElementById('explorerPathLabel');
+        if (pathLabel) {
+          if (searchFilter) {
+            pathLabel.textContent = `Search / "${searchFilter}"`;
+          } else {
+            const folderDef = GALLERY_FOLDERS.find(f => f.id === activeFolderId);
+            const subDef = folderDef ? folderDef.subfolders.find(s => s.id === activeSubId) : null;
+            pathLabel.textContent = `${folderDef ? folderDef.title : 'Collections'} / ${subDef ? subDef.title : 'All'}`;
+          }
+        }
+
         if (!items.length) {
           grid.innerHTML = '<div class="empty-note" style="grid-column: 1 / -1; text-align:center; padding: 3rem 0;">No matching files found. Try another search term or folder.</div>';
           return;
@@ -803,15 +851,20 @@
         items.forEach(item => grid.appendChild(createExplorerItem(item, currentDisplayedItems)));
 
         if (window.anime) {
-          anime({
-            targets: grid.querySelectorAll('.masonry-item'),
-            opacity: [0, 1],
-            translateY: [20, 0],
-            scale: [0.96, 1],
-            delay: anime.stagger(25),
-            duration: 400,
-            easing: 'easeOutQuad',
-          });
+          const cards = Array.from(grid.querySelectorAll('.masonry-item'));
+          const animated = cards.slice(0, 8);
+          cards.slice(8).forEach(el => { el.style.opacity = '1'; });
+          if (animated.length) {
+            anime({
+              targets: animated,
+              opacity: [0, 1],
+              translateY: [16, 0],
+              scale: [0.97, 1],
+              delay: anime.stagger(30),
+              duration: 350,
+              easing: 'easeOutQuad',
+            });
+          }
         }
       }
 
@@ -899,6 +952,10 @@
       }
 
       function closeLightbox() {
+        const vid = lightboxInner.querySelector('video');
+        if (vid) {
+          try { vid.pause(); vid.src = ''; } catch(e) {}
+        }
         if (window.anime) {
           anime({
             targets: lightboxInner,
@@ -922,7 +979,9 @@
       if (lightboxPrev) lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });
       if (lightboxNext) lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
       lightboxClose.addEventListener('click', closeLightbox);
-      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox || e.target === lightboxInner) closeLightbox();
+      });
 
       document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('open')) return;

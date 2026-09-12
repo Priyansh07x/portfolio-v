@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Close mobile menu when link clicked
-  navAnchors.forEach(a => {
+  const allNavLinks = navLinks.querySelectorAll('a');
+  allNavLinks.forEach(a => {
     a.addEventListener('click', () => {
       navbar.classList.remove('menu-open');
       navLinks.classList.remove('open');
@@ -75,8 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Active link based on section in view
   function setActiveNavLink(sectionId) {
-    navAnchors.forEach(a => {
-      a.classList.toggle('active', a.dataset.nav === sectionId);
+    allNavLinks.forEach(a => {
+      if (a.dataset.nav) {
+        a.classList.toggle('active', a.dataset.nav === sectionId);
+      }
     });
   }
 
@@ -397,6 +400,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return m ? `${months[parseInt(m, 10) - 1]} ${y}` : y;
   }
 
+  function getThumbnailSrc(item) {
+    if (!item.src) return '';
+    if (item.type === 'video') {
+      return item.src.replace('/video/upload/', '/video/upload/f_auto,q_auto,w_600,so_0/').replace(/\.mp4$/i, '.jpg');
+    }
+    return item.src.replace('/image/upload/', '/image/upload/f_auto,q_auto,w_600/');
+  }
+
   function createMasonryItem(item, list = null) {
     const div = document.createElement('div');
     div.className = 'masonry-item pinterest-card';
@@ -411,37 +422,25 @@ document.addEventListener('DOMContentLoaded', () => {
     tag.textContent = subLabel;
     div.appendChild(tag);
 
+    const mediaWrap = document.createElement('div');
+    mediaWrap.className = item.type === 'video' ? 'media-wrap video-wrap' : 'media-wrap img-wrap';
+
+    const thumbImg = document.createElement('img');
+    thumbImg.src = getThumbnailSrc(item);
+    thumbImg.alt = item.title;
+    thumbImg.loading = 'lazy';
+    thumbImg.setAttribute('decoding', 'async');
+    thumbImg.setAttribute('draggable', 'false');
+    mediaWrap.appendChild(thumbImg);
+
     if (item.type === 'video') {
-      const vidWrap = document.createElement('div');
-      vidWrap.className = 'media-wrap video-wrap';
-
-      const vid = document.createElement('video');
-      vid.src = item.src;
-      vid.muted = true;
-      vid.preload = 'metadata';
-      vid.setAttribute('controlsList', 'nodownload noplaybackrate');
-      vid.setAttribute('disablePictureInPicture', 'true');
-      vidWrap.appendChild(vid);
-
       const badge = document.createElement('div');
       badge.className = 'play-badge';
       badge.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
-      vidWrap.appendChild(badge);
-
-      div.appendChild(vidWrap);
-    } else {
-      const imgWrap = document.createElement('div');
-      imgWrap.className = 'media-wrap img-wrap';
-
-      const img = document.createElement('img');
-      img.src = item.src;
-      img.alt = item.title;
-      img.loading = 'lazy';
-      img.setAttribute('draggable', 'false');
-      imgWrap.appendChild(img);
-
-      div.appendChild(imgWrap);
+      mediaWrap.appendChild(badge);
     }
+
+    div.appendChild(mediaWrap);
 
     const overlay = document.createElement('div');
     overlay.className = 'item-overlay';
@@ -453,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     div.addEventListener('click', () => openLightbox(item, list));
     div.addEventListener('keypress', (e) => { if (e.key === 'Enter') openLightbox(item, list); });
+    div.addEventListener('contextmenu', (e) => e.preventDefault());
 
     return div;
   }
@@ -463,13 +463,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function animateNewItems(container) {
     if (!window.anime) return;
+    const items = Array.from(container.querySelectorAll('.masonry-item')).slice(0, 6);
+    if (!items.length) return;
     anime({
-      targets: container.querySelectorAll('.masonry-item'),
+      targets: items,
       opacity: [0, 1],
-      translateY: [20, 0],
-      scale: [0.96, 1],
+      translateY: [16, 0],
+      scale: [0.97, 1],
       delay: anime.stagger(30),
-      duration: 450,
+      duration: 350,
       easing: 'easeOutQuad',
     });
   }
@@ -677,12 +679,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeLightbox() {
+    const vid = lightboxInner.querySelector('video');
+    if (vid) vid.pause();
+
     if (window.anime) {
       anime({
         targets: lightboxInner,
         opacity: [1, 0],
         scale: [1, 0.92],
-        duration: 280,
+        duration: 250,
         easing: 'easeInQuad',
         complete: () => {
           lightbox.classList.remove('open');
@@ -700,7 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (lightboxPrev) lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });
   if (lightboxNext) lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
   lightboxClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target === lightboxInner) closeLightbox();
+  });
 
   document.addEventListener('keydown', (e) => {
     if (!lightbox.classList.contains('open')) return;
@@ -725,50 +732,33 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =========================================================================
-     SCROLL-BASED PARALLAX & FADES
+     SCROLL-BASED PARALLAX & CUE (Throttled with requestAnimationFrame)
      ========================================================================= */
   const heroChar = document.getElementById('heroCharacter');
-  const workChar = document.getElementById('workCharacter');
-  const workSection = document.getElementById('work');
+  let ticking = false;
 
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const heroSection = document.getElementById('hero');
-    const heroHeight  = heroSection ? heroSection.offsetHeight : 800;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const heroSection = document.getElementById('hero');
+        const heroHeight  = heroSection ? heroSection.offsetHeight : 800;
 
-    // Scroll cue fade out on scroll
-    if (scrollCue) {
-      if (scrollY > 50) {
-        scrollCue.style.opacity = '0';
-        scrollCue.style.pointerEvents = 'none';
-      } else {
-        scrollCue.style.opacity = '1';
-        scrollCue.style.pointerEvents = 'auto';
-      }
-    }
+        // Scroll cue fade out on scroll
+        if (scrollCue) {
+          scrollCue.style.opacity = scrollY > 50 ? '0' : '1';
+          scrollCue.style.pointerEvents = scrollY > 50 ? 'none' : 'auto';
+        }
 
-    // Hero character parallax
-    if (scrollY < heroHeight && heroChar) {
-      const progress = scrollY / heroHeight;
-      heroChar.style.transform = `translateY(${progress * 30}px)`;
-    }
+        // Hero character subtle parallax
+        if (scrollY < heroHeight && heroChar) {
+          const progress = scrollY / heroHeight;
+          heroChar.style.transform = `translateY(${progress * 25}px)`;
+        }
 
-    // Work character scroll fade and subtle parallax
-    if (workChar && workSection) {
-      const rect = workSection.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // When work section enters viewport
-      if (rect.top < windowHeight && rect.bottom > 0) {
-        // Calculate scroll progress within the work section (0 when top enters, 1 when scrolled past)
-        const progress = Math.min(Math.max((windowHeight - rect.top) / (windowHeight + rect.height), 0), 1);
-        
-        // Dynamic bottom fade that deepens as you scroll through the section
-        const fadeStop = 85 - progress * 15; // from 85% down to 70%
-        workChar.style.maskImage = `linear-gradient(to bottom, black 0%, black ${fadeStop}%, rgba(0,0,0,0.6) ${fadeStop + 8}%, transparent 98%)`;
-        workChar.style.webkitMaskImage = `linear-gradient(to bottom, black 0%, black ${fadeStop}%, rgba(0,0,0,0.6) ${fadeStop + 8}%, transparent 98%)`;
-        workChar.style.transform = `translateY(${progress * 25}px)`;
-      }
+        ticking = false;
+      });
+      ticking = true;
     }
   }, { passive: true });
 

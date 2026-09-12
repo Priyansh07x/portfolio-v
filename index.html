@@ -15,6 +15,15 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-dark">
+<script>
+  (function() {
+    const saved = localStorage.getItem('portfolio-theme');
+    if (saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.body.classList.remove('theme-dark');
+      document.body.classList.add('theme-light');
+    }
+  })();
+</script>
 
 <!-- ============================================================
      BACKGROUND LAYERS
@@ -207,12 +216,12 @@
           <button class="folder-btn active" data-folder="photography">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             <span>Photography</span>
-            <span class="folder-badge" id="badge-photography">39</span>
+            <span class="folder-badge" id="badge-photography">59</span>
           </button>
           <button class="folder-btn" data-folder="video">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
             <span>Videography &amp; Reels</span>
-            <span class="folder-badge" id="badge-video">21</span>
+            <span class="folder-badge" id="badge-video">20</span>
           </button>
         </div>
 
@@ -259,14 +268,14 @@
         collaborate, or just say hi, find me here:
       </p>
       <div class="social-row">
-        <a href="mailto:priyanshnamdeo123@gmail.com" class="social-link" title="Send an email to Priyansh">
+        <a href="mailto:priyanshnamdeo123@gmail.com" class="social-link" title="Send an email to Priyansh" aria-label="Email Priyansh Namdeo">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
             <polyline points="22,6 12,13 2,6"/>
           </svg>
           <span>priyanshnamdeo123@gmail.com</span>
         </a>
-        <a href="https://www.instagram.com/pnx.cam._/?hl=en" target="_blank" rel="noopener" class="social-link">
+        <a href="https://www.instagram.com/pnx.cam._/?hl=en" target="_blank" rel="noopener" class="social-link" aria-label="Visit Priyansh's Instagram profile">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
             <rect x="3" y="3" width="18" height="18" rx="5"/>
             <circle cx="12" cy="12" r="4"/>
@@ -274,7 +283,7 @@
           </svg>
           <span>Instagram</span>
         </a>
-        <a href="https://www.linkedin.com/in/priyansh-namdeo-vii" target="_blank" rel="noopener" class="social-link">
+        <a href="https://www.linkedin.com/in/priyansh-namdeo-vii" target="_blank" rel="noopener" class="social-link" aria-label="Visit Priyansh's LinkedIn profile">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
             <rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/>
             <path d="M6.5 8.8h.01M6.5 12v6M12 12v6M12 12c0-2 1.8-2.8 3-2.8 1.7 0 3 1 3 3.3V18"/>
