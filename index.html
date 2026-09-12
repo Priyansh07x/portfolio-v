@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Priyansh Namdeo — Photographer &amp; Videographer</title>
+<meta name="description" content="Portfolio of Priyansh Namdeo — self-taught photographer and videographer based in Gwalior, India.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>">
+
+<!-- Google Fonts: Fraunces for editorial display, Inter for clean body -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+
+<!-- ============================================================
+     BACKGROUND LAYERS
+     ============================================================ -->
+
+<!-- Dot grid pattern -->
+<div class="dot-grid" aria-hidden="true"></div>
+
+<!-- Global warm glow -->
+<div class="bg-glow" aria-hidden="true"></div>
+
+<!-- Film grain noise overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar" id="navbar" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo" id="navLogo">
+    PN<span>.</span>
+  </a>
+
+  <ul class="nav-links" id="navLinks" role="list">
+    <li><a href="#hero"   class="active" data-nav="hero">Intro</a></li>
+    <li><a href="#work"   data-nav="work">Work</a></li>
+    <li><a href="work.html">All Folders</a></li>
+    <li><a href="#thanks" data-nav="thanks">Contact</a></li>
+  </ul>
+
+  <div style="display:flex;align-items:center;gap:0.8rem;">
+    <!-- Theme toggle (moved into nav) -->
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z"/>
+      </svg>
+    </button>
+
+    <!-- Hamburger (mobile) -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     SIDE DOT NAV
+     ============================================================ -->
+<nav class="dot-nav" aria-label="Section navigation" id="dotNav">
+  <button class="dot active" data-target="hero"   aria-label="Go to intro"></button>
+  <button class="dot"        data-target="work"   aria-label="Go to work"></button>
+  <button class="dot"        data-target="thanks" aria-label="Go to contact"></button>
+</nav>
+
+<!-- ============================================================
+     MAIN SCROLL CONTAINER
+     ============================================================ -->
+<main id="scrollContainer">
+
+  <!-- ============ SECTION 1: HERO ============ -->
+  <section id="hero" class="panel hero-panel">
+    <div class="hero-bg-glow" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+
+      <!-- Left: About text -->
+      <div class="hero-left" id="heroLeft">
+        <p class="hero-tagline">Photographer &middot; Videographer</p>
+        <p class="hero-about">
+          I'm Priyansh — a self-taught photographer and videographer exploring
+          visual storytelling through light, motion, and quiet moments.
+          Currently a third-year B.Tech student at MITS Gwalior,
+          learning the craft one frame at a time.
+        </p>
+      </div>
+
+      <!-- Center: Name + Character -->
+      <div class="hero-center">
+        <div class="hero-nametag" id="heroNametag">
+          <span class="hero-name-line" id="heroLine1">PRIYANSH</span>
+          <span class="hero-name-line" id="heroLine2">NAMDEO</span>
+          <div class="hero-name-accent" id="heroAccent"></div>
+        </div>
+        <img
+          src="assets/01-mine_cutout.png"
+          alt="Illustrated portrait of Priyansh Namdeo"
+          class="hero-character"
+          id="heroCharacter"
+        >
+      </div>
+
+      <!-- Right: hidden spacer for grid balance -->
+      <div class="hero-right" id="heroRight" aria-hidden="true"></div>
+
+    </div><!-- /.hero-inner -->
+
+    <!-- ======== RIBBON — fully behind the character (z-index 1) ======== -->
+    <svg
+      class="hero-ribbon"
+      id="heroRibbon"
+      viewBox="0 0 1440 800"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <!--
+        Single continuous ribbon path sweeping left to right.
+        Entire SVG is z-index 1 — always behind the character (z-index 2).
+        Drawn in via strokeDashoffset animation on page load.
+      -->
+      <path
+        class="ribbon-path"
+        id="ribbonPath"
+        d="M -60,600
+           C  100,400  240,660  420,540
+           C  560,445  680,610  840,500
+           C  990,400 1150,580 1340,460
+           L 1500,420"
+      />
+    </svg>
+
+
+    <!-- ======== 4-pointed sparkle stars (✦) — scattered around ======== -->
+    <span class="sparkle sparkle--lg" style="top:16%;left:9%;"    aria-hidden="true">✦</span>
+    <span class="sparkle"            style="top:70%;right:12%;"   aria-hidden="true">✦</span>
+    <span class="sparkle sparkle--sm" style="top:32%;right:18%;"  aria-hidden="true">✦</span>
+    <span class="sparkle sparkle--sm" style="top:58%;left:28%;"   aria-hidden="true">✦</span>
+    <span class="sparkle sparkle--sm" style="top:80%;left:14%;"   aria-hidden="true">✦</span>
+
+    <!-- ======== Prismatic lens flare light streaks ======== -->
+    <div class="lens-flare lens-flare--1"   aria-hidden="true"></div>
+    <div class="lens-flare lens-flare--2"   aria-hidden="true"></div>
+    <div class="lens-flare lens-flare--dot" aria-hidden="true"></div>
+
+    <!-- Scroll cue -->
+    <div class="scroll-cue" id="scrollCue" role="button" tabindex="0" aria-label="Scroll to work">
+      <span>Scroll</span>
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M12 4v16M6 14l6 6 6-6"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2: WORK ============ -->
+  <section id="work" class="panel work-panel">
+
+    <!-- Left: Character column -->
+    <div class="work-character-col">
+      <img
+        src="assets/02-mine_cutout.png"
+        alt="Illustrated portrait of Priyansh Namdeo holding a camera"
+        class="work-character"
+        id="workCharacter"
+      >
+    </div>
+
+    <!-- Right: Content -->
+    <div class="work-content-col">
+      <div class="work-header" id="workHeader">
+        <h2 class="work-title">The Work</h2>
+        <p class="work-subtitle">A collection of frames, edits, and stories — captured and cut over five years.</p>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="featured" role="tab" aria-selected="true">Featured</button>
+        <button class="tab-btn" data-tab="collections" role="tab" aria-selected="false">Collections &amp; Folders</button>
+      </div>
+
+      <!-- FEATURED TAB -->
+      <div class="tab-panel active" id="tab-featured" role="tabpanel">
+        <div class="masonry pinterest-grid" id="masonry-featured">
+          <!-- populated by JS with all 6 featured items -->
+        </div>
+        <div class="explore-more-bar">
+          <a href="work.html" class="explore-more-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Explore All Work Directory &amp; Folders (60 items) &rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- COLLECTIONS & FOLDERS TAB -->
+      <div class="tab-panel" id="tab-collections" role="tabpanel">
+        <!-- Main Category / Folder Row -->
+        <div class="folder-nav-row" id="folderNavRow">
+          <button class="folder-btn active" data-folder="photography">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Photography</span>
+            <span class="folder-badge" id="badge-photography">39</span>
+          </button>
+          <button class="folder-btn" data-folder="video">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Videography &amp; Reels</span>
+            <span class="folder-badge" id="badge-video">21</span>
+          </button>
+        </div>
+
+        <!-- Subfolder Pills Row -->
+        <div class="subtab-row" id="subfolderNavRow">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Breadcrumb / Active Context indicator -->
+        <div class="folder-breadcrumb" id="folderBreadcrumb">
+          <span class="crumb-root">Collections</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-folder" id="crumbFolder">Photography</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-sub" id="crumbSub">All Photos</span>
+          <span class="crumb-count" id="crumbCount"></span>
+        </div>
+
+        <!-- Pinterest Masonry View -->
+        <div class="masonry pinterest-grid" id="masonry-collections">
+          <!-- populated by JS -->
+        </div>
+
+        <div class="explore-more-bar">
+          <a href="work.html" class="explore-more-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Open Full Directory in Separate Page &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 3: THANK YOU ============ -->
+  <section id="thanks" class="panel thanks-panel">
+    <!-- Background Atmospheric Watermark Typography -->
+    <div class="thanks-watermark" aria-hidden="true">THAT'S A WRAP</div>
+
+    <div class="thanks-content-col" id="thanksContent">
+      <h2 class="thanks-title">Thank You<br>for Stopping By</h2>
+      <p class="thanks-body">
+        That's the work, so far. New frames and edits get added as I make them —
+        feel free to come back and see what's new. If you'd like to talk,
+        collaborate, or just say hi, find me here:
+      </p>
+      <div class="social-row">
+        <a href="mailto:priyanshnamdeo123@gmail.com" class="social-link" title="Send an email to Priyansh">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span>priyanshnamdeo123@gmail.com</span>
+        </a>
+        <a href="https://www.instagram.com/pnx.cam._/?hl=en" target="_blank" rel="noopener" class="social-link">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.2" cy="6.8" r="1"/>
+          </svg>
+          <span>Instagram</span>
+        </a>
+        <a href="https://www.linkedin.com/in/priyansh-namdeo-vii" target="_blank" rel="noopener" class="social-link">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/>
+            <path d="M6.5 8.8h.01M6.5 12v6M12 12v6M12 12c0-2 1.8-2.8 3-2.8 1.7 0 3 1 3 3.3V18"/>
+          </svg>
+          <span>LinkedIn</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="thanks-character-col" id="thanksCharCol">
+      <img
+        src="assets/03-mine_cutout.png"
+        alt="Illustration of Priyansh walking away, waving goodbye"
+        class="thanks-character"
+        id="thanksCharacter"
+      >
+    </div>
+  </section>
+
+</main><!-- /#scrollContainer -->
+
+<!-- ============================================================
+     LIGHTBOX (with Prev/Next Navigation)
+     ============================================================ -->
+<div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous item">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next item">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M9 18l6-6-6-6"/>
+    </svg>
+  </button>
+  <div class="lightbox-inner" id="lightboxInner"></div>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+<script src="gallery-data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

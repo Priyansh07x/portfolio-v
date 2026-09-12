@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Works &amp; Folders — Priyansh Namdeo</title>
+  <meta name="description" content="Explore complete photography and videography collections by Priyansh Namdeo organized by folders.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎥</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Specific styles for Dedicated Works & Folder Explorer Page */
+    .works-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 5vw 60px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .works-header {
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-weight: 500;
+      transition: transform 0.25s var(--ease), color 0.25s var(--ease);
+      width: fit-content;
+      margin-bottom: 0.5rem;
+    }
+    .back-link:hover {
+      transform: translateX(-4px);
+      color: var(--text);
+    }
+    .works-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .works-desc {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 65ch;
+    }
+    /* Large Folder Directory Grid */
+    .folder-grid-section {
+      margin-bottom: 2.5rem;
+    }
+    .section-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .folder-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .dir-folder-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.3rem;
+      cursor: pointer;
+      transition: all 0.35s var(--ease);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .dir-folder-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      transition: background 0.35s var(--ease);
+    }
+    .dir-folder-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(155, 47, 61, 0.2);
+    }
+    .dir-folder-card.active {
+      border-color: var(--accent);
+      background: rgba(100, 26, 39, 0.2);
+      box-shadow: 0 12px 30px rgba(155, 47, 61, 0.25);
+    }
+    .dir-folder-card.active::before,
+    .dir-folder-card:hover::before {
+      background: var(--accent);
+    }
+    .dir-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dir-folder-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(155, 47, 61, 0.15);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dir-folder-card.active .dir-folder-icon {
+      background: var(--accent);
+      color: #F4EDE4;
+    }
+    .dir-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .dir-folder-card.active .dir-badge {
+      background: var(--accent);
+      color: #F4EDE4;
+    }
+    .dir-folder-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .dir-subfolders-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .dir-subfolder-tag {
+      font-size: 0.72rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Subfolder Filter Bar for Active Folder */
+    .active-explorer-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .explorer-bar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .explorer-current-path {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .explorer-current-path svg {
+      color: var(--accent);
+    }
+    .subpills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .subpill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+    .subpill-btn:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(155, 47, 61, 0.15);
+    }
+    .subpill-btn.active {
+      background: var(--burgundy);
+      color: #F4EDE4;
+      border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(155, 47, 61, 0.3);
+    }
+
+    /* Search & Filter Component */
+    .search-filter-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 250px;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.48rem 2.2rem 0.48rem 2.3rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.84rem;
+      outline: none;
+      transition: all 0.3s var(--ease);
+    }
+    .search-input:focus {
+      border-color: var(--accent);
+      background: rgba(23, 13, 16, 0.9);
+      box-shadow: 0 0 14px rgba(155, 47, 61, 0.25);
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: none;
+      padding: 4px;
+      line-height: 1;
+    }
+    .search-clear:hover {
+      color: var(--text);
+    }
+
+    /* Dedicated Page Masonry Grid (Full Height, Infinite scroll style) */
+    .masonry.explorer-grid {
+      columns: 4 240px;
+      column-gap: 18px;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+    }
+    .masonry.explorer-grid .pinterest-card {
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1024px) {
+      .masonry.explorer-grid {
+        columns: 3 200px;
+      }
+    }
+    @media (max-width: 768px) {
+      .works-page {
+        padding-top: 85px;
+      }
+      .masonry.explorer-grid {
+        columns: 2 150px;
+      }
+      .search-filter-box {
+        width: 100%;
+      }
+    }
+    @media (max-width: 480px) {
+      .masonry.explorer-grid {
+        columns: 1 100%;
+      }
+    }
+
+    /* Back to top floating button */
+    .back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      background: var(--burgundy);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(155, 47, 61, 0.4);
+    }
+  </style>
+</head>
+<body class="theme-dark">
+
+  <!-- Dot pattern grid -->
+  <div class="dot-grid" aria-hidden="true"></div>
+
+  <!-- Background atmospheric glow -->
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- Noise overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Fixed Top Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo" id="navLogo">PN.</a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html#hero">Intro</a>
+      <a href="index.html#work">Featured Work</a>
+      <a href="work.html" class="active">All Folders</a>
+      <a href="index.html#thanks">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Works Explorer Page -->
+  <main class="works-page">
+    <div class="works-header">
+      <a href="index.html#work" class="back-link">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Main Page</span>
+      </a>
+      <h1 class="works-title">Work Directory</h1>
+      <p class="works-desc">Complete catalog of photography, cinematography, and event reels organized into directory folders. Select any folder or search below to explore all 60 files.</p>
+    </div>
+
+    <!-- Main Folders Grid -->
+    <section class="folder-grid-section">
+      <div class="section-label">Browse by Folder Category</div>
+      <div class="folder-cards-container" id="folderCardsContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Subfolder Explorer & Filter Bar -->
+    <section class="active-explorer-bar">
+      <div class="explorer-bar-top">
+        <div class="explorer-current-path">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span id="explorerPathLabel">Photography / All Photos</span>
+          <span class="dir-badge" id="explorerCountBadge">0 files</span>
+        </div>
+
+        <!-- Quick search input -->
+        <div class="search-filter-box">
+          <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search title or tag..." autocomplete="off">
+          <button id="searchClear" class="search-clear" aria-label="Clear search">&times;</button>
+        </div>
+      </div>
+      <div class="subpills-row" id="explorerSubpills">
+        <!-- Subfolder buttons rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Full Masonry Gallery -->
+    <div class="masonry pinterest-grid explorer-grid" id="explorerGrid">
+      <!-- Media Cards populated by JS -->
+    </div>
+  </main>
+
+  <!-- Floating Back to Top Button -->
+  <button id="backToTopBtn" class="back-to-top" aria-label="Scroll back to top">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+  </button>
+
+  <!-- Lightbox (with Prev/Next Navigation & Zero Download Option) -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close viewer">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous item">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next item">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+    <div class="lightbox-inner" id="lightboxInner"></div>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <!-- Anime.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- Gallery Data -->
+  <script src="gallery-data.js"></script>
+
+  <!-- Explorer Logic Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Theme Toggle Logic
+      const themeToggle = document.getElementById('themeToggle');
+      const body = document.body;
+      function applyTheme(theme) {
+        body.classList.remove('theme-dark', 'theme-light');
+        body.classList.add(theme === 'light' ? 'theme-light' : 'theme-dark');
+        localStorage.setItem('portfolio-theme', theme);
+      }
+      const savedTheme = localStorage.getItem('portfolio-theme');
+      if (savedTheme) applyTheme(savedTheme);
+      themeToggle.addEventListener('click', () => {
+        const isLight = body.classList.contains('theme-light');
+        applyTheme(isLight ? 'dark' : 'light');
+      });
+
+      // Hamburger mobile menu
+      const navHamburger = document.getElementById('navHamburger');
+      const navLinks = document.getElementById('navLinks');
+      navHamburger.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('open');
+        navHamburger.classList.toggle('open', isOpen);
+      });
+
+      // Back to top floating button
+      const backToTopBtn = document.getElementById('backToTopBtn');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 350) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      }, { passive: true });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Parse URL parameters for initial folder / subfolder deep link
+      const urlParams = new URLSearchParams(window.location.search);
+      let activeFolderId = urlParams.get('folder') || 'photography';
+      let activeSubId = urlParams.get('sub') || 'all';
+      let searchFilter = '';
+
+      const searchInput = document.getElementById('searchInput');
+      const searchClear = document.getElementById('searchClear');
+
+      searchInput.addEventListener('input', (e) => {
+        searchFilter = e.target.value.trim().toLowerCase();
+        searchClear.style.display = searchFilter ? 'block' : 'none';
+        renderExplorerGrid();
+      });
+
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchFilter = '';
+        searchClear.style.display = 'none';
+        renderExplorerGrid();
+        searchInput.focus();
+      });
+
+      // Date formatter
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        const y = parts[0];
+        const m = parts[1];
+        const d = parts[2];
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        if (d && m) return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]} ${y}`;
+        return m ? `${months[parseInt(m, 10) - 1]} ${y}` : y;
+      }
+
+      // Render Category Folder Big Cards
+      function renderFolderCards() {
+        const container = document.getElementById('folderCardsContainer');
+        container.innerHTML = '';
+
+        GALLERY_FOLDERS.forEach(f => {
+          const totalFiles = GALLERY_ITEMS.filter(i => i.category === f.id).length;
+          const card = document.createElement('div');
+          card.className = 'dir-folder-card' + (f.id === activeFolderId ? ' active' : '');
+          
+          let iconSvg = f.id === 'photography' 
+            ? '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>'
+            : '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>';
+
+          const subTagsHtml = f.subfolders
+            .filter(s => s.id !== 'all')
+            .map(s => {
+              const c = GALLERY_ITEMS.filter(i => i.category === f.id && i.subcategory === s.id).length;
+              return `<span class="dir-subfolder-tag">${s.title} (${c})</span>`;
+            }).join('');
+
+          card.innerHTML = `
+            <div class="dir-card-header">
+              <div class="dir-folder-icon">${iconSvg}</div>
+              <span class="dir-badge">${totalFiles} Items</span>
+            </div>
+            <div>
+              <div class="dir-folder-title">${f.title}</div>
+              <div class="dir-subfolders-list">${subTagsHtml}</div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            activeFolderId = f.id;
+            activeSubId = 'all';
+            renderFolderCards();
+            renderSubPills();
+            renderExplorerGrid();
+          });
+
+          container.appendChild(card);
+        });
+      }
+
+      // Render Subfolder filter pills
+      function renderSubPills() {
+        const pillsContainer = document.getElementById('explorerSubpills');
+        pillsContainer.innerHTML = '';
+        const folderDef = GALLERY_FOLDERS.find(f => f.id === activeFolderId);
+        if (!folderDef) return;
+
+        folderDef.subfolders.forEach(s => {
+          let count = 0;
+          if (s.id === 'all') {
+            count = GALLERY_ITEMS.filter(i => i.category === activeFolderId).length;
+          } else {
+            count = GALLERY_ITEMS.filter(i => i.category === activeFolderId && i.subcategory === s.id).length;
+          }
+
+          const btn = document.createElement('button');
+          btn.className = 'subpill-btn' + (s.id === activeSubId ? ' active' : '');
+          btn.innerHTML = `<span>${s.title}</span><span style="opacity:0.65;font-size:0.75rem;">(${count})</span>`;
+          btn.addEventListener('click', () => {
+            activeSubId = s.id;
+            renderSubPills();
+            renderExplorerGrid();
+          });
+          pillsContainer.appendChild(btn);
+        });
+
+        // Update path label
+        const pathLabel = document.getElementById('explorerPathLabel');
+        const subDef = folderDef.subfolders.find(s => s.id === activeSubId);
+        if (pathLabel) {
+          pathLabel.textContent = `${folderDef.title} / ${subDef ? subDef.title : 'All'}`;
+        }
+      }
+
+      let currentDisplayedItems = [];
+
+      // Create item element without any download capability
+      function createExplorerItem(item, list) {
+        const div = document.createElement('div');
+        div.className = 'masonry-item pinterest-card';
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('role', 'button');
+        div.setAttribute('aria-label', `View ${item.title}`);
+
+        const tag = document.createElement('div');
+        tag.className = 'card-tag';
+        tag.textContent = (item.subcategory || item.category).toUpperCase();
+        div.appendChild(tag);
+
+        if (item.type === 'video') {
+          const wrap = document.createElement('div');
+          wrap.className = 'media-wrap video-wrap';
+          const vid = document.createElement('video');
+          vid.src = item.src;
+          vid.muted = true;
+          vid.preload = 'metadata';
+          vid.setAttribute('controlsList', 'nodownload noplaybackrate');
+          vid.setAttribute('disablePictureInPicture', 'true');
+          wrap.appendChild(vid);
+
+          const badge = document.createElement('div');
+          badge.className = 'play-badge';
+          badge.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+          wrap.appendChild(badge);
+          div.appendChild(wrap);
+        } else {
+          const wrap = document.createElement('div');
+          wrap.className = 'media-wrap img-wrap';
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = item.title;
+          img.loading = 'lazy';
+          img.setAttribute('draggable', 'false');
+          wrap.appendChild(img);
+          div.appendChild(wrap);
+        }
+
+        const overlay = document.createElement('div');
+        overlay.className = 'item-overlay';
+        overlay.innerHTML = `
+          <div class="item-title">${item.title}</div>
+          <div class="item-date">${formatDate(item.date)}</div>
+        `;
+        div.appendChild(overlay);
+
+        div.addEventListener('click', () => openLightbox(item, list));
+        div.addEventListener('keypress', (e) => { if (e.key === 'Enter') openLightbox(item, list); });
+        div.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        return div;
+      }
+
+      function renderExplorerGrid() {
+        const grid = document.getElementById('explorerGrid');
+        grid.innerHTML = '';
+
+        let items = GALLERY_ITEMS;
+        
+        // If not global search, filter by active folder and subfolder
+        if (!searchFilter) {
+          items = items.filter(i => i.category === activeFolderId);
+          if (activeSubId !== 'all') {
+            items = items.filter(i => i.subcategory === activeSubId);
+          }
+        } else {
+          // Live search matching title, category, subcategory, or date
+          items = items.filter(i => {
+            const titleMatch = i.title.toLowerCase().includes(searchFilter);
+            const subMatch = (i.subcategory || '').toLowerCase().includes(searchFilter);
+            const catMatch = (i.category || '').toLowerCase().includes(searchFilter);
+            return titleMatch || subMatch || catMatch;
+          });
+        }
+
+        currentDisplayedItems = items;
+
+        const countBadge = document.getElementById('explorerCountBadge');
+        if (countBadge) countBadge.textContent = `${items.length} ${items.length === 1 ? 'file' : 'files'}`;
+
+        if (!items.length) {
+          grid.innerHTML = '<div class="empty-note" style="grid-column: 1 / -1; text-align:center; padding: 3rem 0;">No matching files found. Try another search term or folder.</div>';
+          return;
+        }
+
+        items.forEach(item => grid.appendChild(createExplorerItem(item, currentDisplayedItems)));
+
+        if (window.anime) {
+          anime({
+            targets: grid.querySelectorAll('.masonry-item'),
+            opacity: [0, 1],
+            translateY: [20, 0],
+            scale: [0.96, 1],
+            delay: anime.stagger(25),
+            duration: 400,
+            easing: 'easeOutQuad',
+          });
+        }
+      }
+
+      // Lightbox functionality with Next / Prev support
+      const lightbox = document.getElementById('lightbox');
+      const lightboxInner = document.getElementById('lightboxInner');
+      const lightboxCaption = document.getElementById('lightboxCaption');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const lightboxPrev = document.getElementById('lightboxPrev');
+      const lightboxNext = document.getElementById('lightboxNext');
+
+      let currentLightboxList = [];
+      let currentLightboxIndex = 0;
+
+      function renderLightboxContent(item) {
+        lightboxInner.innerHTML = '';
+        if (item.type === 'video') {
+          const vid = document.createElement('video');
+          vid.src = item.src;
+          vid.controls = true;
+          vid.autoplay = true;
+          vid.loop = false;
+          vid.setAttribute('controlsList', 'nodownload noplaybackrate');
+          vid.setAttribute('disablePictureInPicture', 'true');
+          lightboxInner.appendChild(vid);
+        } else {
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = item.title;
+          img.setAttribute('draggable', 'false');
+          lightboxInner.appendChild(img);
+        }
+        lightboxCaption.innerHTML = `
+          <div class="cap-title">${item.title}</div>
+          <div class="cap-date">${formatDate(item.date)}</div>
+        `;
+      }
+
+      function openLightbox(item, list = null) {
+        currentLightboxList = (list && list.length) ? list : currentDisplayedItems;
+        currentLightboxIndex = currentLightboxList.findIndex(i => i.src === item.src);
+        if (currentLightboxIndex === -1) currentLightboxIndex = 0;
+
+        renderLightboxContent(currentLightboxList[currentLightboxIndex]);
+
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        if (window.anime) {
+          anime({
+            targets: lightboxInner,
+            opacity: [0, 1],
+            scale: [0.92, 1],
+            duration: 400,
+            easing: 'easeOutExpo',
+          });
+          anime({
+            targets: lightboxCaption,
+            opacity: [0, 1],
+            translateY: [12, 0],
+            duration: 380,
+            delay: 150,
+            easing: 'easeOutQuad',
+          });
+        }
+        setTimeout(() => lightboxClose.focus(), 50);
+      }
+
+      function stepLightbox(direction) {
+        if (!currentLightboxList.length) return;
+        currentLightboxIndex = (currentLightboxIndex + direction + currentLightboxList.length) % currentLightboxList.length;
+        const item = currentLightboxList[currentLightboxIndex];
+        
+        renderLightboxContent(item);
+
+        if (window.anime) {
+          anime({
+            targets: lightboxInner,
+            opacity: [0.5, 1],
+            scale: [0.97, 1],
+            duration: 300,
+            easing: 'easeOutQuad',
+          });
+        }
+      }
+
+      function closeLightbox() {
+        if (window.anime) {
+          anime({
+            targets: lightboxInner,
+            opacity: [1, 0],
+            scale: [1, 0.92],
+            duration: 250,
+            easing: 'easeInQuad',
+            complete: () => {
+              lightbox.classList.remove('open');
+              lightboxInner.innerHTML = '';
+              document.body.style.overflow = '';
+            },
+          });
+        } else {
+          lightbox.classList.remove('open');
+          lightboxInner.innerHTML = '';
+          document.body.style.overflow = '';
+        }
+      }
+
+      if (lightboxPrev) lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });
+      if (lightboxNext) lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') stepLightbox(-1);
+        if (e.key === 'ArrowRight') stepLightbox(1);
+      });
+
+      // Initial execution
+      renderFolderCards();
+      renderSubPills();
+      renderExplorerGrid();
+    });
+  </script>
+</body>
+</html>
