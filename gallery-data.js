@@ -722,15 +722,6 @@ const GALLERY_ITEMS = [
   },
   {
     type: "video",
-    src: "https://res.cloudinary.com/udzwnarl/video/upload/v1789217135/lv_0_20250202155840.mp4",
-    title: "Feb Mood Edit",
-    date: "2025-02-02",
-    category: "video",
-    subcategory: "random",
-    featured: false
-  },
-  {
-    type: "video",
     src: "https://res.cloudinary.com/udzwnarl/video/upload/v1789217120/lv_0_20251110183603.mp4",
     title: "Perspective Shift",
     date: "2025-11-10",
