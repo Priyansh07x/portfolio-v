@@ -13,12 +13,21 @@
   <style>
     /* Specific styles for Dedicated Works & Folder Explorer Page */
     .works-page {
+      position: relative;
+      z-index: 2;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       padding: 100px 5vw 60px;
       max-width: 1440px;
       margin: 0 auto;
+    }
+    /* Ensure navbar is immediately fully visible without hero intro animation */
+    .navbar .nav-logo,
+    .navbar .nav-links,
+    .navbar .theme-toggle {
+      opacity: 1 !important;
+      transform: none !important;
     }
     .works-header {
       margin-bottom: 2.5rem;
@@ -338,9 +347,91 @@
       transform: translateY(-3px);
       box-shadow: 0 8px 24px rgba(155, 47, 61, 0.4);
     }
+
+    /* Light Theme Specific Polishes for Directory Explorer */
+    body.theme-light .dir-folder-card {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 4px 18px rgba(110, 30, 42, 0.06);
+    }
+    body.theme-light .dir-folder-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 16px 36px rgba(110, 30, 42, 0.16);
+    }
+    body.theme-light .dir-folder-card.active {
+      background: rgba(110, 30, 42, 0.08);
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(110, 30, 42, 0.15);
+    }
+    body.theme-light .dir-badge {
+      background: rgba(110, 30, 42, 0.08);
+      color: var(--burgundy);
+    }
+    body.theme-light .dir-folder-card.active .dir-badge {
+      background: var(--accent);
+      color: #F4EDE4;
+    }
+    body.theme-light .dir-subfolder-tag {
+      background: rgba(110, 30, 42, 0.06);
+      color: var(--text-muted);
+      border-color: rgba(110, 30, 42, 0.12);
+    }
+    body.theme-light .active-explorer-bar {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 4px 16px rgba(110, 30, 42, 0.06);
+    }
+    body.theme-light .subpill-btn {
+      background: rgba(255, 255, 255, 0.65);
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+    body.theme-light .subpill-btn:hover {
+      background: rgba(110, 30, 42, 0.09);
+      color: var(--text);
+      border-color: var(--accent);
+    }
+    body.theme-light .subpill-btn.active {
+      background: var(--burgundy);
+      color: #F4EDE4;
+      border-color: var(--accent);
+    }
+    body.theme-light .search-input {
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    body.theme-light .search-input:focus {
+      background: #FFFFFF;
+      border-color: var(--accent);
+      box-shadow: 0 0 14px rgba(138, 37, 50, 0.18);
+    }
+    body.theme-light .back-to-top {
+      background: #FFFFFF;
+      border-color: var(--border);
+      color: var(--text);
+      box-shadow: 0 6px 20px rgba(110, 30, 42, 0.14);
+    }
+    body.theme-light .pinterest-card {
+      background: var(--surface);
+      border-color: var(--border);
+      box-shadow: 0 4px 16px rgba(110, 30, 42, 0.06);
+    }
+    body.theme-light .pinterest-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 16px 36px rgba(110, 30, 42, 0.18);
+    }
   </style>
 </head>
 <body class="theme-dark">
+  <script>
+    /* Immediate theme initialization to prevent flash */
+    (function() {
+      var saved = localStorage.getItem('portfolio-theme');
+      var isLight = saved === 'light' || (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+      document.body.className = isLight ? 'theme-light' : 'theme-dark';
+    })();
+  </script>
 
   <!-- Dot pattern grid -->
   <div class="dot-grid" aria-hidden="true"></div>
