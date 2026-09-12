@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* =========================================================================
      INTERSECTION OBSERVER — panel tracking
      ========================================================================= */
+  const ioThreshold = window.innerWidth < 768 ? 0.12 : 0.25;
   const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -123,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerSectionAnimation(section);
       }
     });
-  }, { threshold: 0.35 });
+  }, { threshold: ioThreshold });
 
   panels.forEach(p => io.observe(p));
 
